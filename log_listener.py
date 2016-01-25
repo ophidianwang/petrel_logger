@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Server program
 # UDP VERSION
 
@@ -12,7 +14,7 @@ host = "172.28.128.22"
 port = 514
 buf = 1024
 addr = (host, port)
-log_path = "/tmp/log/storm_petrel_{0}_{1}.log"
+log_path = "/realtime/storm_log/storm_petrel_{0}_{1}.log"
 
 # Create socket and bind to address
 UDPSock = socket(AF_INET, SOCK_DGRAM)
@@ -25,10 +27,13 @@ while 1:
         continue
     else:
         line = str(data)
+        with open("/realtime/storm_log/test.log", "a") as log_file:
+            log_file.write("{0}\n".format(line))
+
         match = re.search(r"^<.*>\[.*\]\[(.*)\]\[.*\]", line)
-        with open(log_path.format(match.group(1), datetime.now().strftime("%Y%m%d%H")), "a") as log_file:
+        with open(log_path.format(match.group(1), datetime.now().strftime("%Y%m%d")), "a") as log_file:
             try:
-                print("\nReceived message '{0}".format(line))
+                print("\nReceived message '{0}'".format(line))
                 log_file.write("{0}\n".format(line))
             except:
                 print("something wrong")
